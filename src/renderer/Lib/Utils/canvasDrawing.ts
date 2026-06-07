@@ -12,9 +12,53 @@ type BadgeInfo = {
   text: string
 }
 
+type ThemeColor = "blue" | "red" | "green" | "orange" | "purple" | "yellow"
+
 //Funcs
 function clearCanvas(ctx: CanvasRenderingContext2D, width: number, height: number) {
   ctx.clearRect(0, 0, width, height)
+}
+
+function getThemeStyles(theme: ThemeColor) {
+  switch (theme) {
+    case "red":
+      return {
+        stroke: "rgba(255, 59, 48, 0.9)",
+        fill: "rgba(255, 59, 48, 0.05)",
+        border: "rgba(255, 59, 48, 0.85)"
+      }
+    case "green":
+      return {
+        stroke: "rgba(52, 199, 89, 0.9)",
+        fill: "rgba(52, 199, 89, 0.05)",
+        border: "rgba(52, 199, 89, 0.85)"
+      }
+    case "orange":
+      return {
+        stroke: "rgba(255, 149, 0, 0.9)",
+        fill: "rgba(255, 149, 0, 0.05)",
+        border: "rgba(255, 149, 0, 0.85)"
+      }
+    case "purple":
+      return {
+        stroke: "rgba(175, 82, 222, 0.9)",
+        fill: "rgba(175, 82, 222, 0.05)",
+        border: "rgba(175, 82, 222, 0.85)"
+      }
+    case "yellow":
+      return {
+        stroke: "rgba(255, 204, 0, 0.9)",
+        fill: "rgba(255, 204, 0, 0.05)",
+        border: "rgba(255, 204, 0, 0.85)"
+      }
+    case "blue":
+    default:
+      return {
+        stroke: "rgba(0, 122, 255, 0.9)",
+        fill: "rgba(0, 122, 255, 0.05)",
+        border: "rgba(0, 122, 255, 0.85)"
+      }
+  }
 }
 
 function drawBadge(
@@ -62,17 +106,20 @@ function drawSelection(
   end: Point,
   screenWidth: number,
   screenHeight: number,
-  copied: boolean = false
+  copied: boolean = false,
+  theme: ThemeColor = "blue"
 ): BadgeInfo | null {
   let x = Math.min(start.x, end.x)
   let y = Math.min(start.y, end.y)
   let w = Math.abs(start.x - end.x)
   let h = Math.abs(start.y - end.y)
 
-  ctx.fillStyle = "rgba(0, 122, 255, 0.05)"
+  let styles = getThemeStyles(theme)
+
+  ctx.fillStyle = styles.fill
   ctx.fillRect(x, y, w, h)
 
-  ctx.strokeStyle = "rgba(0, 122, 255, 0.85)"
+  ctx.strokeStyle = styles.border
   ctx.lineWidth = 1
   ctx.setLineDash([4, 3])
   ctx.strokeRect(x, y, w, h)
@@ -90,21 +137,24 @@ function drawHorizontal(
   end: Point,
   screenWidth: number,
   screenHeight: number,
-  copied: boolean = false
+  copied: boolean = false,
+  theme: ThemeColor = "blue"
 ): BadgeInfo | null {
   let y = start.y
   let xStart = start.x
   let xEnd = end.x
   let length = Math.abs(xEnd - xStart)
 
-  ctx.strokeStyle = "rgba(0, 122, 255, 0.9)"
+  let styles = getThemeStyles(theme)
+
+  ctx.strokeStyle = styles.stroke
   ctx.lineWidth = 1.5
   ctx.beginPath()
   ctx.moveTo(xStart, y)
   ctx.lineTo(xEnd, y)
   ctx.stroke()
 
-  ctx.strokeStyle = "rgba(0, 122, 255, 0.9)"
+  ctx.strokeStyle = styles.stroke
   ctx.lineWidth = 1.5
   ctx.beginPath()
   ctx.moveTo(xStart, y - 6)
@@ -125,21 +175,24 @@ function drawVertical(
   end: Point,
   screenWidth: number,
   screenHeight: number,
-  copied: boolean = false
+  copied: boolean = false,
+  theme: ThemeColor = "blue"
 ): BadgeInfo | null {
   let x = start.x
   let yStart = start.y
   let yEnd = end.y
   let length = Math.abs(yEnd - yStart)
 
-  ctx.strokeStyle = "rgba(0, 122, 255, 0.9)"
+  let styles = getThemeStyles(theme)
+
+  ctx.strokeStyle = styles.stroke
   ctx.lineWidth = 1.5
   ctx.beginPath()
   ctx.moveTo(x, yStart)
   ctx.lineTo(x, yEnd)
   ctx.stroke()
 
-  ctx.strokeStyle = "rgba(0, 122, 255, 0.9)"
+  ctx.strokeStyle = styles.stroke
   ctx.lineWidth = 1.5
   ctx.beginPath()
   ctx.moveTo(x - 6, yStart)
@@ -154,13 +207,15 @@ function drawVertical(
   return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
 }
 
+/*
 function drawCross(
   ctx: CanvasRenderingContext2D,
   start: Point,
   end: Point,
   screenWidth: number,
   screenHeight: number,
-  copied: boolean = false
+  copied: boolean = false,
+  theme: ThemeColor = "blue"
 ): BadgeInfo | null {
   let xStart = start.x
   let yStart = start.y
@@ -170,7 +225,9 @@ function drawCross(
   let w = Math.abs(xEnd - xStart)
   let h = Math.abs(yEnd - yStart)
 
-  ctx.strokeStyle = "rgba(0, 122, 255, 0.85)"
+  let styles = getThemeStyles(theme)
+
+  ctx.strokeStyle = styles.border
   ctx.lineWidth = 1.5
   ctx.beginPath()
   ctx.moveTo(xStart, yStart)
@@ -196,6 +253,7 @@ function drawCross(
   let labelY = Math.min(yStart, yEnd) + h / 2
   return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
 }
+*/
 
-export type { Point, BadgeInfo }
-export { clearCanvas, drawSelection, drawHorizontal, drawVertical, drawCross }
+export type { Point, BadgeInfo, ThemeColor }
+export { clearCanvas, drawSelection, drawHorizontal, drawVertical }

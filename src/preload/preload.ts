@@ -32,5 +32,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   resizeWindow: function (width: number, height: number) {
     ipcRenderer.send("resize-window", width, height)
+  },
+  setThemeColor: function (color: string) {
+    ipcRenderer.send("set-theme-color", color)
+  },
+  onUpdateThemeColor: function (callback: (color: string) => void) {
+    let subscription = function (_event: unknown, color: string) {
+      callback(color)
+    }
+    ipcRenderer.on("update-theme-color", subscription)
   }
 })

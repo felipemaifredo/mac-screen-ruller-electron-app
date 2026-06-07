@@ -27,6 +27,7 @@ let __dirname = getDirname()
 let toolbarWin: BrowserWindow | null = null
 let overlayWin: BrowserWindow | null = null
 let currentMode: string | null = null
+let currentThemeColor: string = "blue"
 
 function broadcastMode(mode: string | null) {
   if (toolbarWin && !toolbarWin.isDestroyed()) {
@@ -34,6 +35,15 @@ function broadcastMode(mode: string | null) {
   }
   if (overlayWin && !overlayWin.isDestroyed()) {
     overlayWin.webContents.send("update-measurement-mode", mode)
+  }
+}
+
+function broadcastThemeColor(color: string) {
+  if (toolbarWin && !toolbarWin.isDestroyed()) {
+    toolbarWin.webContents.send("update-theme-color", color)
+  }
+  if (overlayWin && !overlayWin.isDestroyed()) {
+    overlayWin.webContents.send("update-theme-color", color)
   }
 }
 
@@ -98,6 +108,12 @@ function createToolbarWindow() {
     toolbarWin.loadFile(indexHtml, { search: "window=toolbar" })
   }
 
+  toolbarWin.webContents.on("did-finish-load", function () {
+    if (toolbarWin && !toolbarWin.isDestroyed()) {
+      toolbarWin.webContents.send("update-theme-color", currentThemeColor)
+    }
+  })
+
   toolbarWin.on("closed", function () {
     toolbarWin = null
     if (overlayWin && !overlayWin.isDestroyed()) {
@@ -140,6 +156,13 @@ function createOverlayWindow() {
     overlayWin.loadFile(indexHtml, { search: "window=overlay" })
   }
 
+  overlayWin.webContents.on("did-finish-load", function () {
+    if (overlayWin && !overlayWin.isDestroyed()) {
+      overlayWin.webContents.send("update-theme-color", currentThemeColor)
+      overlayWin.webContents.send("update-measurement-mode", currentMode)
+    }
+  })
+
   overlayWin.on("closed", function () {
     overlayWin = null
   })
@@ -148,6 +171,11 @@ function createOverlayWindow() {
 function setupIpc() {
   ipcMain.on("set-measurement-mode", function (_event, mode: string | null) {
     handleModeChange(mode)
+  })
+
+  ipcMain.on("set-theme-color", function (_event, color: string) {
+    currentThemeColor = color
+    broadcastThemeColor(color)
   })
 
   ipcMain.on("overlay-action", function (_event, action: string) {

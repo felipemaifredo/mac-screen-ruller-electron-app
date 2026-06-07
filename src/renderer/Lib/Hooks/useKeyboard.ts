@@ -3,7 +3,7 @@ import { useEffect } from "react"
 
 //Types
 type KeyHandlers = {
-  [key: string]: () => void
+  [key: string]: (event: KeyboardEvent) => void
 }
 
 //Main
@@ -12,7 +12,7 @@ function useKeyboard(handlers: KeyHandlers) {
     function handleKeyDown(event: KeyboardEvent) {
       let handler = handlers[event.key]
       if (handler) {
-        handler()
+        handler(event)
       }
     }
 
@@ -25,3 +25,4 @@ function useKeyboard(handlers: KeyHandlers) {
 
 export default useKeyboard
 export { useKeyboard }
+

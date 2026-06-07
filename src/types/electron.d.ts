@@ -8,6 +8,8 @@ type ElectronAPI = {
   closeApp: () => void
   minimizeApp: () => void
   resizeWindow: (width: number, height: number) => void
+  setThemeColor: (color: string) => void
+  onUpdateThemeColor: (callback: (color: string) => void) => void
 }
 
 declare global {

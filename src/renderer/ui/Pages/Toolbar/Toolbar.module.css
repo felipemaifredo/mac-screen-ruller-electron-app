@@ -64,12 +64,12 @@
 }
 
 .buttonActive {
-  background-color: rgba(0, 122, 255, 0.85);
+  background-color: var(--active-color, rgba(0, 122, 255, 0.85));
   color: #ffffff;
 }
 
 .buttonActive:hover {
-  background-color: rgba(0, 122, 255, 0.95);
+  background-color: var(--active-hover-color, rgba(0, 122, 255, 0.95));
 }
 
 .separator {
@@ -191,4 +191,39 @@
   color: rgba(255, 255, 255, 0.6);
   text-align: right;
 }
+
+.themeSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  -webkit-app-region: no-drag;
+}
+
+.colorCircle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s, border-color 0.15s;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.colorCircle:hover {
+  transform: scale(1.15);
+}
+
+.colorCircleActive {
+  border-color: #ffffff;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.blue { background-color: rgb(0, 122, 255); }
+.red { background-color: rgb(255, 59, 48); }
+.green { background-color: rgb(52, 199, 89); }
+.orange { background-color: rgb(255, 149, 0); }
+.purple { background-color: rgb(175, 82, 222); }
+.yellow { background-color: rgb(255, 204, 0); }
 
