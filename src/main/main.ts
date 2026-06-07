@@ -1,7 +1,8 @@
 //Libs
-import { app, BrowserWindow, ipcMain, globalShortcut, screen } from "electron"
+import { app, BrowserWindow, ipcMain, globalShortcut, screen, systemPreferences } from "electron"
 import * as path from "path"
 import { fileURLToPath } from "url"
+import * as fs from "fs"
 
 //Imports
 // (No custom local imports in main file)
@@ -28,6 +29,44 @@ let toolbarWin: BrowserWindow | null = null
 let overlayWin: BrowserWindow | null = null
 let currentMode: string | null = null
 let currentThemeColor: string = "blue"
+let currentThemeMode: "dark" | "light" = "dark"
+let currentMaterialType: "translucent" | "tinted" = "translucent"
+let configPath = path.join(app.getPath("userData"), "config.json")
+
+function loadConfig() {
+  try {
+    if (fs.existsSync(configPath)) {
+      let rawData = fs.readFileSync(configPath, "utf-8")
+      let data = JSON.parse(rawData)
+      if (data) {
+        if (typeof data.themeColor === "string") {
+          currentThemeColor = data.themeColor
+        }
+        if (typeof data.themeMode === "string") {
+          currentThemeMode = data.themeMode as "dark" | "light"
+        }
+        if (typeof data.materialType === "string") {
+          currentMaterialType = data.materialType as "translucent" | "tinted"
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Erro ao carregar config:", e)
+  }
+}
+
+function saveConfig() {
+  try {
+    let data = {
+      themeColor: currentThemeColor,
+      themeMode: currentThemeMode,
+      materialType: currentMaterialType
+    }
+    fs.writeFileSync(configPath, JSON.stringify(data), "utf-8")
+  } catch (e) {
+    console.error("Erro ao salvar config:", e)
+  }
+}
 
 function broadcastMode(mode: string | null) {
   if (toolbarWin && !toolbarWin.isDestroyed()) {
@@ -44,6 +83,18 @@ function broadcastThemeColor(color: string) {
   }
   if (overlayWin && !overlayWin.isDestroyed()) {
     overlayWin.webContents.send("update-theme-color", color)
+  }
+}
+
+function broadcastThemeMode(mode: "dark" | "light") {
+  if (toolbarWin && !toolbarWin.isDestroyed()) {
+    toolbarWin.webContents.send("update-theme-mode", mode)
+  }
+}
+
+function broadcastMaterialType(type: "translucent" | "tinted") {
+  if (toolbarWin && !toolbarWin.isDestroyed()) {
+    toolbarWin.webContents.send("update-material-type", type)
   }
 }
 
@@ -111,6 +162,8 @@ function createToolbarWindow() {
   toolbarWin.webContents.on("did-finish-load", function () {
     if (toolbarWin && !toolbarWin.isDestroyed()) {
       toolbarWin.webContents.send("update-theme-color", currentThemeColor)
+      toolbarWin.webContents.send("update-theme-mode", currentThemeMode)
+      toolbarWin.webContents.send("update-material-type", currentMaterialType)
     }
   })
 
@@ -175,6 +228,7 @@ function setupIpc() {
 
   ipcMain.on("set-theme-color", function (_event, color: string) {
     currentThemeColor = color
+    saveConfig()
     broadcastThemeColor(color)
   })
 
@@ -203,6 +257,32 @@ function setupIpc() {
       toolbarWin.setSize(width, height)
     }
   })
+
+  ipcMain.on("set-theme-mode", function (_event, mode: "dark" | "light") {
+    currentThemeMode = mode
+    saveConfig()
+    broadcastThemeMode(mode)
+  })
+
+  ipcMain.on("set-material-type", function (_event, type: "translucent" | "tinted") {
+    currentMaterialType = type
+    saveConfig()
+    broadcastMaterialType(type)
+  })
+
+  ipcMain.handle("get-system-accent-color", function () {
+    try {
+      if (typeof systemPreferences.getAccentColor === "function") {
+        let rawColor = systemPreferences.getAccentColor()
+        if (rawColor && rawColor.length >= 6) {
+          return "#" + rawColor.substring(0, 6)
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao ler cor de destaque:", e)
+    }
+    return "#007aff"
+  })
 }
 
 function registerShortcuts() {
@@ -217,6 +297,7 @@ function registerShortcuts() {
 
 //Main
 function init() {
+  loadConfig()
   createToolbarWindow()
   createOverlayWindow()
   setupIpc()

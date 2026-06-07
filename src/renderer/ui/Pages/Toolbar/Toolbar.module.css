@@ -10,10 +10,59 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-color);
   user-select: none;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow: hidden;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+
+  /* Theme variables - Default Dark Translucent */
+  --text-color: rgba(255, 255, 255, 0.9);
+  --btn-color: rgba(255, 255, 255, 0.85);
+  --btn-hover-bg: rgba(255, 255, 255, 0.1);
+  --separator-bg: rgba(255, 255, 255, 0.15);
+  --grabber-color: rgba(255, 255, 255, 0.25);
+  --help-modal-bg: rgba(20, 20, 20, 0.4);
+  --help-modal-border: rgba(255, 255, 255, 0.08);
+  --help-title-color: rgba(255, 255, 255, 0.35);
+  --help-key-bg: rgba(255, 255, 255, 0.1);
+  --help-key-border: rgba(255, 255, 255, 0.08);
+  --help-key-text: rgba(255, 255, 255, 0.85);
+  --help-desc-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Light Theme Variable Overrides */
+.container.lightTheme {
+  background-color: rgba(255, 255, 255, 0.75);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+
+  --text-color: rgba(0, 0, 0, 0.85);
+  --btn-color: rgba(0, 0, 0, 0.75);
+  --btn-hover-bg: rgba(0, 0, 0, 0.06);
+  --separator-bg: rgba(0, 0, 0, 0.12);
+  --grabber-color: rgba(0, 0, 0, 0.35);
+  --help-modal-bg: rgba(255, 255, 255, 0.4);
+  --help-modal-border: rgba(0, 0, 0, 0.06);
+  --help-title-color: rgba(0, 0, 0, 0.45);
+  --help-key-bg: rgba(0, 0, 0, 0.05);
+  --help-key-border: rgba(0, 0, 0, 0.08);
+  --help-key-text: rgba(0, 0, 0, 0.8);
+  --help-desc-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Tinted Material variant (Dark) */
+.container.tinted {
+  background-color: color-mix(in srgb, var(--active-color) 12%, rgba(20, 20, 20, 0.98));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Tinted Material variant (Light) */
+.container.lightTheme.tinted {
+  background-color: color-mix(in srgb, var(--active-color) 10%, rgba(245, 245, 245, 0.98));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .toolbar {
@@ -31,8 +80,9 @@
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--grabber-color);
   cursor: grab;
+  transition: color 0.3s;
 }
 
 .buttonGroup {
@@ -52,20 +102,20 @@
   border: none;
   border-radius: 6px;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--btn-color);
   cursor: pointer;
   -webkit-app-region: no-drag;
   transition: background-color 0.15s, color 0.15s;
 }
 
 .button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: var(--btn-hover-bg);
+  color: var(--text-color);
 }
 
 .buttonActive {
   background-color: var(--active-color, rgba(0, 122, 255, 0.85));
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .buttonActive:hover {
@@ -75,9 +125,19 @@
 .separator {
   width: 1px;
   height: 18px;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: var(--separator-bg);
   margin: 0 6px;
   -webkit-app-region: drag;
+  transition: background-color 0.3s;
+}
+
+.separatorMini {
+  width: 1px;
+  height: 14px;
+  background-color: var(--separator-bg);
+  margin: 0 2px;
+  -webkit-app-region: no-drag;
+  transition: background-color 0.3s;
 }
 
 .utilityGroup {
@@ -97,20 +157,20 @@
   border: none;
   border-radius: 6px;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--btn-color);
   cursor: pointer;
   -webkit-app-region: no-drag;
   transition: background-color 0.15s, color 0.15s;
 }
 
 .utilityButton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: var(--btn-hover-bg);
+  color: var(--text-color);
 }
 
 .closeButton:hover {
   background-color: rgba(255, 69, 58, 0.85);
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 /* Tooltip styles */
@@ -148,20 +208,22 @@
   flex-direction: column;
   box-sizing: border-box;
   padding: 10px 12px 14px 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background-color: rgba(20, 20, 20, 0.4);
+  border-top: 1px solid var(--help-modal-border);
+  background-color: var(--help-modal-bg);
   flex: 1;
   overflow: hidden;
   -webkit-app-region: no-drag;
+  transition: background-color 0.3s, border-top-color 0.3s;
 }
 
 .helpTitle {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--help-title-color);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 8px;
+  transition: color 0.3s;
 }
 
 .helpList {
@@ -178,18 +240,20 @@
 }
 
 .helpKey {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--help-key-bg);
+  border: 1px solid var(--help-key-border);
   border-radius: 4px;
   padding: 2px 5px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--help-key-text);
   font-size: 10px;
   font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
 }
 
 .helpDesc {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--help-desc-color);
   text-align: right;
+  transition: color 0.3s;
 }
 
 .themeSelector {
@@ -220,6 +284,11 @@
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.6), inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+.container.lightTheme .colorCircleActive {
+  border-color: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
 .blue { background-color: rgb(0, 122, 255); }
 .red { background-color: rgb(255, 59, 48); }
 .green { background-color: rgb(52, 199, 89); }
@@ -227,3 +296,48 @@
 .purple { background-color: rgb(175, 82, 222); }
 .yellow { background-color: rgb(255, 204, 0); }
 
+/* Appearance Settings Styles */
+.appearanceSelector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  -webkit-app-region: no-drag;
+}
+
+.toggleGroup {
+  display: flex;
+  background-color: var(--help-key-bg);
+  border: 1px solid var(--help-key-border);
+  border-radius: 6px;
+  padding: 2px;
+  flex: 1;
+}
+
+.toggleButton {
+  flex: 1;
+  border: none;
+  background-color: transparent;
+  color: var(--btn-color);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+  text-align: center;
+}
+
+.toggleButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.container.lightTheme .toggleButton:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.toggleButtonActive {
+  background-color: var(--active-color);
+  color: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}

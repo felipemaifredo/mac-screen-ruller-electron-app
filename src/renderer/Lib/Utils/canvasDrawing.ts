@@ -12,52 +12,79 @@ type BadgeInfo = {
   text: string
 }
 
-type ThemeColor = "blue" | "red" | "green" | "orange" | "purple" | "yellow"
+type ThemeColor = "blue" | "red" | "green" | "orange" | "purple" | "yellow" | "system" | string
 
 //Funcs
 function clearCanvas(ctx: CanvasRenderingContext2D, width: number, height: number) {
   ctx.clearRect(0, 0, width, height)
 }
 
-function getThemeStyles(theme: ThemeColor) {
-  switch (theme) {
-    case "red":
+function getThemeStyles(theme: ThemeColor, systemColor?: string) {
+  let color = theme
+  if (theme === "system") {
+    color = systemColor || "#007aff"
+  }
+
+  if (color === "red") {
+    return {
+      stroke: "rgba(255, 59, 48, 0.9)",
+      fill: "rgba(255, 59, 48, 0.05)",
+      border: "rgba(255, 59, 48, 0.85)"
+    }
+  }
+  if (color === "green") {
+    return {
+      stroke: "rgba(52, 199, 89, 0.9)",
+      fill: "rgba(52, 199, 89, 0.05)",
+      border: "rgba(52, 199, 89, 0.85)"
+    }
+  }
+  if (color === "orange") {
+    return {
+      stroke: "rgba(255, 149, 0, 0.9)",
+      fill: "rgba(255, 149, 0, 0.05)",
+      border: "rgba(255, 149, 0, 0.85)"
+    }
+  }
+  if (color === "purple") {
+    return {
+      stroke: "rgba(175, 82, 222, 0.9)",
+      fill: "rgba(175, 82, 222, 0.05)",
+      border: "rgba(175, 82, 222, 0.85)"
+    }
+  }
+  if (color === "yellow") {
+    return {
+      stroke: "rgba(255, 204, 0, 0.9)",
+      fill: "rgba(255, 204, 0, 0.05)",
+      border: "rgba(255, 204, 0, 0.85)"
+    }
+  }
+  if (color === "blue") {
+    return {
+      stroke: "rgba(0, 122, 255, 0.9)",
+      fill: "rgba(0, 122, 255, 0.05)",
+      border: "rgba(0, 122, 255, 0.85)"
+    }
+  }
+
+  if (typeof color === "string" && color.startsWith("#")) {
+    let r = parseInt(color.slice(1, 3), 16)
+    let g = parseInt(color.slice(3, 5), 16)
+    let b = parseInt(color.slice(5, 7), 16)
+    if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
       return {
-        stroke: "rgba(255, 59, 48, 0.9)",
-        fill: "rgba(255, 59, 48, 0.05)",
-        border: "rgba(255, 59, 48, 0.85)"
+        stroke: `rgba(${r}, ${g}, ${b}, 0.9)`,
+        fill: `rgba(${r}, ${g}, ${b}, 0.05)`,
+        border: `rgba(${r}, ${g}, ${b}, 0.85)`
       }
-    case "green":
-      return {
-        stroke: "rgba(52, 199, 89, 0.9)",
-        fill: "rgba(52, 199, 89, 0.05)",
-        border: "rgba(52, 199, 89, 0.85)"
-      }
-    case "orange":
-      return {
-        stroke: "rgba(255, 149, 0, 0.9)",
-        fill: "rgba(255, 149, 0, 0.05)",
-        border: "rgba(255, 149, 0, 0.85)"
-      }
-    case "purple":
-      return {
-        stroke: "rgba(175, 82, 222, 0.9)",
-        fill: "rgba(175, 82, 222, 0.05)",
-        border: "rgba(175, 82, 222, 0.85)"
-      }
-    case "yellow":
-      return {
-        stroke: "rgba(255, 204, 0, 0.9)",
-        fill: "rgba(255, 204, 0, 0.05)",
-        border: "rgba(255, 204, 0, 0.85)"
-      }
-    case "blue":
-    default:
-      return {
-        stroke: "rgba(0, 122, 255, 0.9)",
-        fill: "rgba(0, 122, 255, 0.05)",
-        border: "rgba(0, 122, 255, 0.85)"
-      }
+    }
+  }
+
+  return {
+    stroke: "rgba(0, 122, 255, 0.9)",
+    fill: "rgba(0, 122, 255, 0.05)",
+    border: "rgba(0, 122, 255, 0.85)"
   }
 }
 
@@ -107,14 +134,15 @@ function drawSelection(
   screenWidth: number,
   screenHeight: number,
   copied: boolean = false,
-  theme: ThemeColor = "blue"
+  theme: ThemeColor = "blue",
+  systemColor?: string
 ): BadgeInfo | null {
   let x = Math.min(start.x, end.x)
   let y = Math.min(start.y, end.y)
   let w = Math.abs(start.x - end.x)
   let h = Math.abs(start.y - end.y)
 
-  let styles = getThemeStyles(theme)
+  let styles = getThemeStyles(theme, systemColor)
 
   ctx.fillStyle = styles.fill
   ctx.fillRect(x, y, w, h)
@@ -138,14 +166,15 @@ function drawHorizontal(
   screenWidth: number,
   screenHeight: number,
   copied: boolean = false,
-  theme: ThemeColor = "blue"
+  theme: ThemeColor = "blue",
+  systemColor?: string
 ): BadgeInfo | null {
   let y = start.y
   let xStart = start.x
   let xEnd = end.x
   let length = Math.abs(xEnd - xStart)
 
-  let styles = getThemeStyles(theme)
+  let styles = getThemeStyles(theme, systemColor)
 
   ctx.strokeStyle = styles.stroke
   ctx.lineWidth = 1.5
@@ -176,14 +205,15 @@ function drawVertical(
   screenWidth: number,
   screenHeight: number,
   copied: boolean = false,
-  theme: ThemeColor = "blue"
+  theme: ThemeColor = "blue",
+  systemColor?: string
 ): BadgeInfo | null {
   let x = start.x
   let yStart = start.y
   let yEnd = end.y
   let length = Math.abs(yEnd - yStart)
 
-  let styles = getThemeStyles(theme)
+  let styles = getThemeStyles(theme, systemColor)
 
   ctx.strokeStyle = styles.stroke
   ctx.lineWidth = 1.5

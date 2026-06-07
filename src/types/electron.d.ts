@@ -8,8 +8,13 @@ type ElectronAPI = {
   closeApp: () => void
   minimizeApp: () => void
   resizeWindow: (width: number, height: number) => void
+  getSystemAccentColor: () => Promise<string>
   setThemeColor: (color: string) => void
   onUpdateThemeColor: (callback: (color: string) => void) => void
+  setThemeMode: (mode: "dark" | "light") => void
+  onUpdateThemeMode: (callback: (mode: "dark" | "light") => void) => void
+  setMaterialType: (type: "translucent" | "tinted") => void
+  onUpdateMaterialType: (callback: (type: "translucent" | "tinted") => void) => void
 }
 
 declare global {

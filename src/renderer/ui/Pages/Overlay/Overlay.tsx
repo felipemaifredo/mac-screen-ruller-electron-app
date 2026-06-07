@@ -29,9 +29,16 @@ const Overlay = () => {
   // Pin state
   let [fixedMeasurements, setFixedMeasurements] = useState<PinnedMeasurement[]>([])
   let [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+  let [systemColor, setSystemColor] = useState<string>("#007aff")
 
   let activeBadgeRef = useRef<BadgeInfo | null>(null)
   let fixedBadgesRef = useRef<BadgeInfo[]>([])
+
+  useEffect(function () {
+    window.electronAPI.getSystemAccentColor().then(function (color) {
+      setSystemColor(color)
+    })
+  }, [])
 
   useEffect(function () {
     let unsubscribe = window.electronAPI.onUpdateMeasurementMode(function (newMode) {
@@ -152,11 +159,11 @@ const Overlay = () => {
       let badge: BadgeInfo | null = null
 
       if (m.mode === "selection") {
-        badge = drawSelection(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme)
+        badge = drawSelection(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor)
       } else if (m.mode === "horizontal") {
-        badge = drawHorizontal(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme)
+        badge = drawHorizontal(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor)
       } else if (m.mode === "vertical") {
-        badge = drawVertical(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme)
+        badge = drawVertical(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor)
       }
       // else if (m.mode === "cross") {
       //   badge = drawCross(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme)
@@ -177,18 +184,18 @@ const Overlay = () => {
     let badge: BadgeInfo | null = null
 
     if (mode === "selection") {
-      badge = drawSelection(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme)
+      badge = drawSelection(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor)
     } else if (mode === "horizontal") {
-      badge = drawHorizontal(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme)
+      badge = drawHorizontal(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor)
     } else if (mode === "vertical") {
-      badge = drawVertical(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme)
+      badge = drawVertical(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor)
     }
     // else if (mode === "cross") {
     //   badge = drawCross(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme)
     // }
 
     activeBadgeRef.current = badge
-  }, [mode, startPoint, endPoint, dimensions, copied, theme, fixedMeasurements, copiedIndex])
+  }, [mode, startPoint, endPoint, dimensions, copied, theme, fixedMeasurements, copiedIndex, systemColor])
 
   useEffect(function () {
     draw()

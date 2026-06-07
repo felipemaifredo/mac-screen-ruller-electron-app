@@ -14,6 +14,9 @@ const Toolbar = () => {
   let [mode, setMode] = useState<string | null>(null)
   let [theme, setTheme] = useState<ThemeColor>("blue")
   let [showHelp, setShowHelp] = useState(false)
+  let [systemColor, setSystemColor] = useState<string>("#007aff")
+  let [themeMode, setThemeMode] = useState<"dark" | "light">("dark")
+  let [materialType, setMaterialType] = useState<"translucent" | "tinted">("translucent")
 
   useEffect(function () {
     let unsubscribe = window.electronAPI.onUpdateMeasurementMode(function (newMode) {
@@ -29,6 +32,26 @@ const Toolbar = () => {
     return unsubscribe
   }, [])
 
+  useEffect(function () {
+    let unsubscribe = window.electronAPI.onUpdateThemeMode(function (newMode) {
+      setThemeMode(newMode)
+    })
+    return unsubscribe
+  }, [])
+
+  useEffect(function () {
+    let unsubscribe = window.electronAPI.onUpdateMaterialType(function (newType) {
+      setMaterialType(newType)
+    })
+    return unsubscribe
+  }, [])
+
+  useEffect(function () {
+    window.electronAPI.getSystemAccentColor().then(function (color) {
+      setSystemColor(color)
+    })
+  }, [])
+
   function handleSelectMode(selectedMode: string) {
     let nextMode = mode === selectedMode ? null : selectedMode
     window.electronAPI.setMeasurementMode(nextMode)
@@ -36,6 +59,14 @@ const Toolbar = () => {
 
   function handleSelectTheme(selectedTheme: ThemeColor) {
     window.electronAPI.setThemeColor(selectedTheme)
+  }
+
+  function handleSelectThemeMode(selectedThemeMode: "dark" | "light") {
+    window.electronAPI.setThemeMode(selectedThemeMode)
+  }
+
+  function handleSelectMaterialType(selectedMaterialType: "translucent" | "tinted") {
+    window.electronAPI.setMaterialType(selectedMaterialType)
   }
 
   function handleClose() {
@@ -50,37 +81,48 @@ const Toolbar = () => {
     let nextShowHelp = !showHelp
     setShowHelp(nextShowHelp)
     if (nextShowHelp) {
-      window.electronAPI.resizeWindow(250, 250)
+      window.electronAPI.resizeWindow(320, 380)
     } else {
       window.electronAPI.resizeWindow(250, 50)
     }
   }
 
-  let activeColorMap: { [key in ThemeColor]: string } = {
-    blue: "rgba(0, 122, 255, 0.85)",
-    red: "rgba(255, 59, 48, 0.85)",
-    green: "rgba(52, 199, 89, 0.85)",
-    orange: "rgba(255, 149, 0, 0.85)",
-    purple: "rgba(175, 82, 222, 0.85)",
-    yellow: "rgba(255, 204, 0, 0.85)"
+  function hexToRgba(hex: string, alpha: number) {
+    let r = parseInt(hex.slice(1, 3), 16)
+    let g = parseInt(hex.slice(3, 5), 16)
+    let b = parseInt(hex.slice(5, 7), 16)
+    if (isNaN(r) || isNaN(g) || isNaN(b)) {
+      return `rgba(0, 122, 255, ${alpha})`
+    }
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
   }
 
-  let activeHoverColorMap: { [key in ThemeColor]: string } = {
-    blue: "rgba(0, 122, 255, 0.95)",
-    red: "rgba(255, 59, 48, 0.95)",
-    green: "rgba(52, 199, 89, 0.95)",
-    orange: "rgba(255, 149, 0, 0.95)",
-    purple: "rgba(175, 82, 222, 0.95)",
-    yellow: "rgba(255, 204, 0, 0.95)"
+  function getThemeColorValue(color: string, alpha: number) {
+    if (color === "system") {
+      return hexToRgba(systemColor, alpha)
+    }
+    if (color.startsWith("#")) {
+      return hexToRgba(color, alpha)
+    }
+    let baseColors: { [key: string]: string } = {
+      blue: "0, 122, 255",
+      red: "255, 59, 48",
+      green: "52, 199, 89",
+      orange: "255, 149, 0",
+      purple: "175, 82, 222",
+      yellow: "255, 204, 0"
+    }
+    let rgb = baseColors[color] || "0, 122, 255"
+    return `rgba(${rgb}, ${alpha})`
   }
 
   let containerStyle = {
-    "--active-color": activeColorMap[theme],
-    "--active-hover-color": activeHoverColorMap[theme]
+    "--active-color": getThemeColorValue(theme, 0.85),
+    "--active-hover-color": getThemeColorValue(theme, 0.95)
   } as React.CSSProperties
 
   return (
-    <div className={styles.container} style={containerStyle}>
+    <div className={`${styles.container} ${themeMode === "light" ? styles.lightTheme : ""} ${materialType === "tinted" ? styles.tinted : ""}`} style={containerStyle}>
       <div className={styles.toolbar}>
         <div className={styles.grabber}>
           <Icon name="grabber" size={12} />
@@ -124,19 +166,19 @@ const Toolbar = () => {
 
         <div className={styles.utilityGroup}>
           <button
-            className={styles.utilityButton}
-            onClick={handleMinimize}
-            data-tooltip={texts.toolbar.minimize}
-          >
-            <Icon name="minimize" size={16} />
-          </button>
-
-          <button
             className={`${styles.utilityButton} ${showHelp ? styles.buttonActive : ""}`}
             onClick={toggleHelp}
             data-tooltip="Atalhos e Comandos"
           >
             <Icon name="settings" size={16} />
+          </button>
+
+          <button
+            className={styles.utilityButton}
+            onClick={handleMinimize}
+            data-tooltip={texts.toolbar.minimize}
+          >
+            <Icon name="minimize" size={16} />
           </button>
 
           <button
@@ -173,6 +215,17 @@ const Toolbar = () => {
 
           <div className={styles.helpTitle} style={{ marginTop: "10px" }}>Cor das Guias</div>
           <div className={styles.themeSelector}>
+            <button
+              className={`${styles.colorCircle} ${theme === "system" ? styles.colorCircleActive : ""}`}
+              style={{
+                background: "conic-gradient(from 180deg at 50% 50%, #ff453a, #ff9f0a, #ffd60a, #30d158, #0a84ff, #5e5ce6, #bf5af2, #ff453a)"
+              }}
+              onClick={function () { handleSelectTheme("system") }}
+              data-tooltip="Destaque do Sistema (macOS)"
+            />
+
+            <div className={styles.separatorMini} />
+
             {(["blue", "red", "green", "orange", "purple", "yellow"] as ThemeColor[]).map(function (colorName) {
               return (
                 <button
@@ -183,6 +236,64 @@ const Toolbar = () => {
                 />
               )
             })}
+
+            <div className={styles.separatorMini} />
+
+            <button
+              className={`${styles.colorCircle} ${theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? styles.colorCircleActive : ""}`}
+              style={{
+                backgroundColor: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? theme : "#ffffff",
+                backgroundImage: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? "none" : "linear-gradient(to right, #ff007f, #7f00ff, #00ffff)",
+                border: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? "1.5px solid #ffffff" : "1.5px dashed rgba(255, 255, 255, 0.4)"
+              }}
+              onClick={function () {
+                let picker = document.getElementById("custom-color-picker")
+                if (picker) {
+                  picker.click()
+                }
+              }}
+              data-tooltip="Cor Personalizada..."
+            />
+            <input
+              id="custom-color-picker"
+              type="color"
+              value={theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? theme : "#007aff"}
+              onChange={function (e) { handleSelectTheme(e.target.value) }}
+              style={{ display: "none" }}
+            />
+          </div>
+
+          <div className={styles.helpTitle} style={{ marginTop: "12px" }}>Aparência</div>
+          <div className={styles.appearanceSelector}>
+            <div className={styles.toggleGroup}>
+              <button
+                className={`${styles.toggleButton} ${themeMode === "light" ? styles.toggleButtonActive : ""}`}
+                onClick={function () { handleSelectThemeMode("light") }}
+              >
+                Claro
+              </button>
+              <button
+                className={`${styles.toggleButton} ${themeMode === "dark" ? styles.toggleButtonActive : ""}`}
+                onClick={function () { handleSelectThemeMode("dark") }}
+              >
+                Escuro
+              </button>
+            </div>
+
+            <div className={styles.toggleGroup}>
+              <button
+                className={`${styles.toggleButton} ${materialType === "translucent" ? styles.toggleButtonActive : ""}`}
+                onClick={function () { handleSelectMaterialType("translucent") }}
+              >
+                Translúcido
+              </button>
+              <button
+                className={`${styles.toggleButton} ${materialType === "tinted" ? styles.toggleButtonActive : ""}`}
+                onClick={function () { handleSelectMaterialType("tinted") }}
+              >
+                Tonalizado
+              </button>
+            </div>
           </div>
         </div>
       )}

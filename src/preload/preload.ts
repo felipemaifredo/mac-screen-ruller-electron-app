@@ -33,6 +33,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   resizeWindow: function (width: number, height: number) {
     ipcRenderer.send("resize-window", width, height)
   },
+  getSystemAccentColor: function () {
+    return ipcRenderer.invoke("get-system-accent-color")
+  },
   setThemeColor: function (color: string) {
     ipcRenderer.send("set-theme-color", color)
   },
@@ -41,5 +44,23 @@ contextBridge.exposeInMainWorld("electronAPI", {
       callback(color)
     }
     ipcRenderer.on("update-theme-color", subscription)
+  },
+  setThemeMode: function (mode: "dark" | "light") {
+    ipcRenderer.send("set-theme-mode", mode)
+  },
+  onUpdateThemeMode: function (callback: (mode: "dark" | "light") => void) {
+    let subscription = function (_event: unknown, mode: "dark" | "light") {
+      callback(mode)
+    }
+    ipcRenderer.on("update-theme-mode", subscription)
+  },
+  setMaterialType: function (type: "translucent" | "tinted") {
+    ipcRenderer.send("set-material-type", type)
+  },
+  onUpdateMaterialType: function (callback: (type: "translucent" | "tinted") => void) {
+    let subscription = function (_event: unknown, type: "translucent" | "tinted") {
+      callback(type)
+    }
+    ipcRenderer.on("update-material-type", subscription)
   }
 })
