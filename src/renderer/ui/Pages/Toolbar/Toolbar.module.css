@@ -1,0 +1,134 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 0 8px;
+  background-color: rgba(35, 35, 35, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  -webkit-app-region: drag;
+  color: rgba(255, 255, 255, 0.9);
+  user-select: none;
+}
+
+.grabber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: grab;
+}
+
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.buttonActive {
+  background-color: rgba(0, 122, 255, 0.85);
+  color: #ffffff;
+}
+
+.buttonActive:hover {
+  background-color: rgba(0, 122, 255, 0.95);
+}
+
+.separator {
+  width: 1px;
+  height: 18px;
+  background-color: rgba(255, 255, 255, 0.15);
+  margin: 0 6px;
+  -webkit-app-region: drag;
+}
+
+.utilityGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.utilityButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.utilityButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 69, 58, 0.85);
+  color: #ffffff;
+}
+
+/* Tooltip styles */
+.button::after,
+.utilityButton::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(15, 15, 15, 0.95);
+  color: rgba(255, 255, 255, 0.95);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.15s, transform 0.15s;
+  z-index: 1000;
+}
+
+.button:hover::after,
+.utilityButton:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(4px);
+  transition-delay: 0.3s;
+}
