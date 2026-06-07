@@ -4,17 +4,35 @@ type Point = {
   y: number
 }
 
+type BadgeInfo = {
+  x: number
+  y: number
+  w: number
+  h: number
+  text: string
+}
+
 //Funcs
 function clearCanvas(ctx: CanvasRenderingContext2D, width: number, height: number) {
   ctx.clearRect(0, 0, width, height)
 }
 
-function drawBadge(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, screenWidth: number, screenHeight: number) {
+function drawBadge(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  screenWidth: number,
+  screenHeight: number,
+  copied: boolean = false
+): BadgeInfo {
   ctx.font = "bold 11px -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif"
   ctx.textBaseline = "middle"
   ctx.textAlign = "center"
 
-  let textWidth = ctx.measureText(text).width
+  let displayText = copied ? "Copiado!" : text
+
+  let textWidth = ctx.measureText(displayText).width
   let paddingX = 8
   let paddingY = 4
   let badgeWidth = textWidth + paddingX * 2
@@ -23,17 +41,19 @@ function drawBadge(ctx: CanvasRenderingContext2D, text: string, x: number, y: nu
   let badgeX = Math.max(10, Math.min(x - badgeWidth / 2, screenWidth - badgeWidth - 10))
   let badgeY = Math.max(10, Math.min(y - badgeHeight / 2, screenHeight - badgeHeight - 10))
 
-  ctx.fillStyle = "rgba(30, 30, 30, 0.9)"
+  ctx.fillStyle = copied ? "rgba(40, 167, 69, 0.95)" : "rgba(30, 30, 30, 0.9)"
   ctx.beginPath()
   ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 4)
   ctx.fill()
 
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.15)"
+  ctx.strokeStyle = copied ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)"
   ctx.lineWidth = 1
   ctx.stroke()
 
   ctx.fillStyle = "#ffffff"
-  ctx.fillText(text, badgeX + badgeWidth / 2, badgeY + badgeHeight / 2)
+  ctx.fillText(displayText, badgeX + badgeWidth / 2, badgeY + badgeHeight / 2)
+
+  return { x: badgeX, y: badgeY, w: badgeWidth, h: badgeHeight, text }
 }
 
 function drawSelection(
@@ -41,8 +61,9 @@ function drawSelection(
   start: Point,
   end: Point,
   screenWidth: number,
-  screenHeight: number
-) {
+  screenHeight: number,
+  copied: boolean = false
+): BadgeInfo | null {
   let x = Math.min(start.x, end.x)
   let y = Math.min(start.y, end.y)
   let w = Math.abs(start.x - end.x)
@@ -60,7 +81,7 @@ function drawSelection(
   let labelText = `${w} × ${h} px`
   let labelX = x + w / 2
   let labelY = y + h / 2
-  drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight)
+  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
 }
 
 function drawHorizontal(
@@ -68,8 +89,9 @@ function drawHorizontal(
   start: Point,
   end: Point,
   screenWidth: number,
-  screenHeight: number
-) {
+  screenHeight: number,
+  copied: boolean = false
+): BadgeInfo | null {
   let y = start.y
   let xStart = start.x
   let xEnd = end.x
@@ -94,7 +116,7 @@ function drawHorizontal(
   let labelText = `${length} px`
   let labelX = xStart + (xEnd - xStart) / 2
   let labelY = y - 18
-  drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight)
+  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
 }
 
 function drawVertical(
@@ -102,8 +124,9 @@ function drawVertical(
   start: Point,
   end: Point,
   screenWidth: number,
-  screenHeight: number
-) {
+  screenHeight: number,
+  copied: boolean = false
+): BadgeInfo | null {
   let x = start.x
   let yStart = start.y
   let yEnd = end.y
@@ -128,7 +151,7 @@ function drawVertical(
   let labelText = `${length} px`
   let labelX = x + 30
   let labelY = yStart + (yEnd - yStart) / 2
-  drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight)
+  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
 }
 
 function drawCross(
@@ -136,8 +159,9 @@ function drawCross(
   start: Point,
   end: Point,
   screenWidth: number,
-  screenHeight: number
-) {
+  screenHeight: number,
+  copied: boolean = false
+): BadgeInfo | null {
   let xStart = start.x
   let yStart = start.y
   let xEnd = end.x
@@ -167,16 +191,11 @@ function drawCross(
   ctx.stroke()
   ctx.setLineDash([])
 
-  let hLabel = `${w} px`
-  let hLabelX = xStart + (xEnd - xStart) / 2
-  let hLabelY = yStart - 16
-  drawBadge(ctx, hLabel, hLabelX, hLabelY, screenWidth, screenHeight)
-
-  let vLabel = `${h} px`
-  let vLabelX = xEnd + 30
-  let vLabelY = yStart + (yEnd - yStart) / 2
-  drawBadge(ctx, vLabel, vLabelX, vLabelY, screenWidth, screenHeight)
+  let labelText = `${w} × ${h} px`
+  let labelX = Math.min(xStart, xEnd) + w / 2
+  let labelY = Math.min(yStart, yEnd) + h / 2
+  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
 }
 
-export type { Point }
+export type { Point, BadgeInfo }
 export { clearCanvas, drawSelection, drawHorizontal, drawVertical, drawCross }

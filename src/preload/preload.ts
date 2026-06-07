@@ -29,5 +29,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   minimizeApp: function () {
     ipcRenderer.send("minimize-app")
+  },
+  resizeWindow: function (width: number, height: number) {
+    ipcRenderer.send("resize-window", width, height)
   }
 })

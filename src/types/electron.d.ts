@@ -7,6 +7,7 @@ type ElectronAPI = {
   onOverlayAction: (callback: (action: string) => void) => void
   closeApp: () => void
   minimizeApp: () => void
+  resizeWindow: (width: number, height: number) => void
 }
 
 declare global {

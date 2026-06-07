@@ -1,6 +1,6 @@
 {
-  "name": "mac-screen-ruler",
-  "version": "1.0.0",
+  "name": "mac-screen-ruller",
+  "version": "0.0.1",
   "description": "Screen Ruler utility for macOS built with Electron, React, Vite, and TypeScript.",
   "author": "Felipemaifredo",
   "main": "dist-electron/main.js",

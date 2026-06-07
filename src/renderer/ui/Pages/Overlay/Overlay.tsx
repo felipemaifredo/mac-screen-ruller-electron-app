@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 //Imports
 import useKeyboard from "../../../Lib/Hooks/useKeyboard"
 import { clearCanvas, drawSelection, drawHorizontal, drawVertical, drawCross } from "../../../Lib/Utils/canvasDrawing"
-import type { Point } from "../../../Lib/Utils/canvasDrawing"
+import type { Point, BadgeInfo } from "../../../Lib/Utils/canvasDrawing"
 import styles from "./Overlay.module.css"
 
 //Main
@@ -16,6 +16,8 @@ const Overlay = () => {
   let [isDrawing, setIsDrawing] = useState(false)
   let [isFrozen, setIsFrozen] = useState(false)
   let [dimensions, setDimensions] = useState({ w: window.innerWidth, h: window.innerHeight })
+  let activeBadgeRef = useRef<BadgeInfo | null>(null)
+  let [copied, setCopied] = useState(false)
 
   useEffect(function () {
     let unsubscribe = window.electronAPI.onUpdateMeasurementMode(function (newMode) {
@@ -48,9 +50,6 @@ const Overlay = () => {
       } else {
         window.electronAPI.cancelMeasurement()
       }
-    },
-    Enter: function () {
-      setIsFrozen(true)
     }
   }
   useKeyboard(keyHandlers)
@@ -64,18 +63,25 @@ const Overlay = () => {
 
     clearCanvas(ctx, dimensions.w, dimensions.h)
 
-    if (!mode || !startPoint || !endPoint) return
+    if (!mode || !startPoint || !endPoint) {
+      activeBadgeRef.current = null
+      return
+    }
+
+    let badge: BadgeInfo | null = null
 
     if (mode === "selection") {
-      drawSelection(ctx, startPoint, endPoint, dimensions.w, dimensions.h)
+      badge = drawSelection(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied)
     } else if (mode === "horizontal") {
-      drawHorizontal(ctx, startPoint, endPoint, dimensions.w, dimensions.h)
+      badge = drawHorizontal(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied)
     } else if (mode === "vertical") {
-      drawVertical(ctx, startPoint, endPoint, dimensions.w, dimensions.h)
+      badge = drawVertical(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied)
     } else if (mode === "cross") {
-      drawCross(ctx, startPoint, endPoint, dimensions.w, dimensions.h)
+      badge = drawCross(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied)
     }
-  }, [mode, startPoint, endPoint, dimensions])
+
+    activeBadgeRef.current = badge
+  }, [mode, startPoint, endPoint, dimensions, copied])
 
   useEffect(function () {
     draw()
@@ -83,6 +89,25 @@ const Overlay = () => {
 
   function handleMouseDown(e: React.MouseEvent<HTMLCanvasElement>) {
     if (!mode) return
+
+    if (isFrozen && activeBadgeRef.current) {
+      let badge = activeBadgeRef.current
+      let isInside =
+        e.clientX >= badge.x &&
+        e.clientX <= badge.x + badge.w &&
+        e.clientY >= badge.y &&
+        e.clientY <= badge.y + badge.h
+
+      if (isInside) {
+        let cleanText = badge.text.replace(/\s*px\s*$/, "").trim()
+        navigator.clipboard.writeText(cleanText)
+        setCopied(true)
+        setTimeout(function () {
+          setCopied(false)
+        }, 1000)
+        return
+      }
+    }
 
     let currentPoint = { x: e.clientX, y: e.clientY }
     setStartPoint(currentPoint)
@@ -92,7 +117,31 @@ const Overlay = () => {
   }
 
   function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
-    if (!isDrawing || !startPoint) return
+    let canvas = canvasRef.current
+    if (!canvas) return
+
+    if (isFrozen && activeBadgeRef.current) {
+      let badge = activeBadgeRef.current
+      let isInside =
+        e.clientX >= badge.x &&
+        e.clientX <= badge.x + badge.w &&
+        e.clientY >= badge.y &&
+        e.clientY <= badge.y + badge.h
+
+      if (isInside) {
+        canvas.style.cursor = "pointer"
+      } else {
+        canvas.style.cursor = "crosshair"
+      }
+      return
+    }
+
+    if (!isDrawing || !startPoint) {
+      if (mode && canvas.style.cursor !== "crosshair") {
+        canvas.style.cursor = "crosshair"
+      }
+      return
+    }
 
     setEndPoint({ x: e.clientX, y: e.clientY })
   }

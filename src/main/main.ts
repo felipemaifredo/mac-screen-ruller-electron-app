@@ -169,6 +169,12 @@ function setupIpc() {
       toolbarWin.minimize()
     }
   })
+
+  ipcMain.on("resize-window", function (_event, width: number, height: number) {
+    if (toolbarWin && !toolbarWin.isDestroyed()) {
+      toolbarWin.setSize(width, height)
+    }
+  })
 }
 
 function registerShortcuts() {

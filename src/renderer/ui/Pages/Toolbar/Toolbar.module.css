@@ -1,19 +1,29 @@
-.toolbar {
+.container {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
-  padding: 0 8px;
-  background-color: rgba(35, 35, 35, 0.8);
+  background-color: rgba(30, 30, 30, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  -webkit-app-region: drag;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   color: rgba(255, 255, 255, 0.9);
   user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  -webkit-app-region: drag;
 }
 
 .grabber {
@@ -132,3 +142,53 @@
   transform: translateX(-50%) translateY(4px);
   transition-delay: 0.3s;
 }
+
+.helpModal {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 10px 12px 14px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(20, 20, 20, 0.4);
+  flex: 1;
+  overflow: hidden;
+  -webkit-app-region: no-drag;
+}
+
+.helpTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.helpList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.helpItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.helpKey {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 5px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 10px;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.helpDesc {
+  color: rgba(255, 255, 255, 0.6);
+  text-align: right;
+}
+
