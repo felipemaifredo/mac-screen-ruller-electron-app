@@ -17,6 +17,7 @@ const Toolbar = () => {
   let [systemColor, setSystemColor] = useState<string>("#007aff")
   let [themeMode, setThemeMode] = useState<"dark" | "light">("dark")
   let [materialType, setMaterialType] = useState<"translucent" | "tinted">("translucent")
+  let [activeTab, setActiveTab] = useState<"preferences" | "shortcuts">("preferences")
 
   useEffect(function () {
     let unsubscribe = window.electronAPI.onUpdateMeasurementMode(function (newMode) {
@@ -193,108 +194,172 @@ const Toolbar = () => {
 
       {showHelp && (
         <div className={styles.helpModal}>
-          <div className={styles.helpTitle}>Atalhos & Comandos</div>
-          <div className={styles.helpList}>
-            <div className={styles.helpItem}>
-              <span className={styles.helpKey}>Cmd + Shift + M</span>
-              <span className={styles.helpDesc}>Atalho global</span>
-            </div>
-            <div className={styles.helpItem}>
-              <span className={styles.helpKey}>Arrastar</span>
-              <span className={styles.helpDesc}>Medir na tela</span>
-            </div>
-            <div className={styles.helpItem}>
-              <span className={styles.helpKey}>Clique no nº</span>
-              <span className={styles.helpDesc}>Copiar medida</span>
-            </div>
-            <div className={styles.helpItem}>
-              <span className={styles.helpKey}>Esc</span>
-              <span className={styles.helpDesc}>Limpar / Fechar</span>
-            </div>
-          </div>
-
-          <div className={styles.helpTitle} style={{ marginTop: "10px" }}>Cor das Guias</div>
-          <div className={styles.themeSelector}>
+          <div className={styles.tabs}>
             <button
-              className={`${styles.colorCircle} ${theme === "system" ? styles.colorCircleActive : ""}`}
-              style={{
-                background: "conic-gradient(from 180deg at 50% 50%, #ff453a, #ff9f0a, #ffd60a, #30d158, #0a84ff, #5e5ce6, #bf5af2, #ff453a)"
-              }}
-              onClick={function () { handleSelectTheme("system") }}
-              data-tooltip="Destaque do Sistema (macOS)"
-            />
-
-            <div className={styles.separatorMini} />
-
-            {(["blue", "red", "green", "orange", "purple", "yellow"] as ThemeColor[]).map(function (colorName) {
-              return (
-                <button
-                  key={colorName}
-                  className={`${styles.colorCircle} ${styles[colorName]} ${theme === colorName ? styles.colorCircleActive : ""}`}
-                  onClick={function () { handleSelectTheme(colorName) }}
-                  data-tooltip={colorName.charAt(0).toUpperCase() + colorName.slice(1)}
-                />
-              )
-            })}
-
-            <div className={styles.separatorMini} />
-
+              className={`${styles.tabButton} ${activeTab === "preferences" ? styles.tabButtonActive : ""}`}
+              onClick={function () { setActiveTab("preferences") }}
+            >
+              Preferências
+            </button>
             <button
-              className={`${styles.colorCircle} ${theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? styles.colorCircleActive : ""}`}
-              style={{
-                backgroundColor: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? theme : "#ffffff",
-                backgroundImage: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? "none" : "linear-gradient(to right, #ff007f, #7f00ff, #00ffff)",
-                border: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? "1.5px solid #ffffff" : "1.5px dashed rgba(255, 255, 255, 0.4)"
-              }}
-              onClick={function () {
-                let picker = document.getElementById("custom-color-picker")
-                if (picker) {
-                  picker.click()
-                }
-              }}
-              data-tooltip="Cor Personalizada..."
-            />
-            <input
-              id="custom-color-picker"
-              type="color"
-              value={theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? theme : "#007aff"}
-              onChange={function (e) { handleSelectTheme(e.target.value) }}
-              style={{ display: "none" }}
-            />
+              className={`${styles.tabButton} ${activeTab === "shortcuts" ? styles.tabButtonActive : ""}`}
+              onClick={function () { setActiveTab("shortcuts") }}
+            >
+              Atalhos
+            </button>
           </div>
 
-          <div className={styles.helpTitle} style={{ marginTop: "12px" }}>Aparência</div>
-          <div className={styles.appearanceSelector}>
-            <div className={styles.toggleGroup}>
-              <button
-                className={`${styles.toggleButton} ${themeMode === "light" ? styles.toggleButtonActive : ""}`}
-                onClick={function () { handleSelectThemeMode("light") }}
-              >
-                Claro
-              </button>
-              <button
-                className={`${styles.toggleButton} ${themeMode === "dark" ? styles.toggleButtonActive : ""}`}
-                onClick={function () { handleSelectThemeMode("dark") }}
-              >
-                Escuro
-              </button>
-            </div>
+          {activeTab === "preferences" ? (
+            <div className={styles.settingsList}>
+              <div className={styles.settingRow}>
+                <span className={styles.settingLabel}>Tema</span>
+                <div className={styles.settingControl}>
+                  <div className={styles.segmentedControl}>
+                    <button
+                      className={`${styles.segmentedButton} ${themeMode === "light" ? styles.segmentedButtonActive : ""}`}
+                      onClick={function () { handleSelectThemeMode("light") }}
+                    >
+                      Claro
+                    </button>
+                    <button
+                      className={`${styles.segmentedButton} ${themeMode === "dark" ? styles.segmentedButtonActive : ""}`}
+                      onClick={function () { handleSelectThemeMode("dark") }}
+                    >
+                      Escuro
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-            <div className={styles.toggleGroup}>
-              <button
-                className={`${styles.toggleButton} ${materialType === "translucent" ? styles.toggleButtonActive : ""}`}
-                onClick={function () { handleSelectMaterialType("translucent") }}
-              >
-                Translúcido
-              </button>
-              <button
-                className={`${styles.toggleButton} ${materialType === "tinted" ? styles.toggleButtonActive : ""}`}
-                onClick={function () { handleSelectMaterialType("tinted") }}
-              >
-                Tonalizado
-              </button>
+              <div className={styles.settingRow}>
+                <span className={styles.settingLabel}>Material</span>
+                <div className={styles.settingControl}>
+                  <div className={styles.segmentedControl}>
+                    <button
+                      className={`${styles.segmentedButton} ${materialType === "translucent" ? styles.segmentedButtonActive : ""}`}
+                      onClick={function () { handleSelectMaterialType("translucent") }}
+                    >
+                      Translúcido
+                    </button>
+                    <button
+                      className={`${styles.segmentedButton} ${materialType === "tinted" ? styles.segmentedButtonActive : ""}`}
+                      onClick={function () { handleSelectMaterialType("tinted") }}
+                    >
+                      Tonalizado
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.settingRow}>
+                <span className={styles.settingLabel}>Cor das Guias</span>
+                <div className={styles.settingControl}>
+                  <div className={styles.themeSelector}>
+                    <button
+                      className={`${styles.colorCircle} ${theme === "system" ? styles.colorCircleActive : ""}`}
+                      style={{
+                        background: "conic-gradient(from 180deg at 50% 50%, #ff453a, #ff9f0a, #ffd60a, #30d158, #0a84ff, #5e5ce6, #bf5af2, #ff453a)"
+                      }}
+                      onClick={function () { handleSelectTheme("system") }}
+                      data-tooltip="Destaque do Sistema (macOS)"
+                    />
+
+                    <div className={styles.separatorMini} />
+
+                    {(["blue", "red", "green", "orange", "purple", "yellow"] as ThemeColor[]).map(function (colorName) {
+                      return (
+                        <button
+                          key={colorName}
+                          className={`${styles.colorCircle} ${styles[colorName]} ${theme === colorName ? styles.colorCircleActive : ""}`}
+                          onClick={function () { handleSelectTheme(colorName) }}
+                          data-tooltip={colorName.charAt(0).toUpperCase() + colorName.slice(1)}
+                        />
+                      )
+                    })}
+
+                    <div className={styles.separatorMini} />
+
+                    <button
+                      className={`${styles.colorCircle} ${theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? styles.colorCircleActive : ""}`}
+                      style={{
+                        backgroundColor: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? theme : "#ffffff",
+                        backgroundImage: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? "none" : "linear-gradient(to right, #ff007f, #7f00ff, #00ffff)",
+                        border: theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? "1.5px solid #ffffff" : "1.5px dashed rgba(255, 255, 255, 0.4)"
+                      }}
+                      onClick={function () {
+                        let picker = document.getElementById("custom-color-picker")
+                        if (picker) {
+                          picker.click()
+                        }
+                      }}
+                      data-tooltip="Cor Personalizada..."
+                    />
+                    <input
+                      id="custom-color-picker"
+                      type="color"
+                      value={theme !== "system" && !["blue", "red", "green", "orange", "purple", "yellow"].includes(theme) ? theme : "#007aff"}
+                      onChange={function (e) { handleSelectTheme(e.target.value) }}
+                      style={{ display: "none" }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className={styles.kbdList}>
+              <div className={styles.kbdRow}>
+                <span className={styles.kbdLabel}>Atalho Global</span>
+                <div className={styles.kbdKeys}>
+                  <kbd className={styles.kbdKey}>⌘</kbd>
+                  <kbd className={styles.kbdKey}>⇧</kbd>
+                  <kbd className={styles.kbdKey}>M</kbd>
+                </div>
+              </div>
+              <div className={styles.kbdRow}>
+                <span className={styles.kbdLabel}>Limpar / Cancelar</span>
+                <div className={styles.kbdKeys}>
+                  <kbd className={styles.kbdKey}>⎋ Esc</kbd>
+                </div>
+              </div>
+              <div className={styles.kbdRow}>
+                <span className={styles.kbdLabel}>Mudar Modo (Seleção / Horiz / Vert)</span>
+                <div className={styles.kbdKeys}>
+                  <kbd className={styles.kbdKey}>S</kbd>
+                  <kbd className={styles.kbdKey}>H</kbd>
+                  <kbd className={styles.kbdKey}>V</kbd>
+                </div>
+              </div>
+              <div className={styles.kbdRow}>
+                <span className={styles.kbdLabel}>Fixar Medição na Tela</span>
+                <div className={styles.kbdKeys}>
+                  <kbd className={styles.kbdKey}>↵ Enter</kbd>
+                </div>
+              </div>
+              <div className={styles.kbdRow}>
+                <span className={styles.kbdLabel}>Apagar Última Fixada</span>
+                <div className={styles.kbdKeys}>
+                  <kbd className={styles.kbdKey}>⌫ Backspace</kbd>
+                </div>
+              </div>
+              <div className={styles.kbdRow}>
+                <span className={styles.kbdLabel}>Mover Guia Ativa (1px / 10px)</span>
+                <div className={styles.kbdKeys}>
+                  <kbd className={styles.kbdKey}>↑</kbd>
+                  <kbd className={styles.kbdKey}>↓</kbd>
+                  <kbd className={styles.kbdKey}>←</kbd>
+                  <kbd className={styles.kbdKey}>→</kbd>
+                  <span style={{ fontSize: "10px", opacity: 0.6, margin: "0 2px" }}>+</span>
+                  <kbd className={styles.kbdKey}>⇧ Shift</kbd>
+                </div>
+              </div>
+              <div className={styles.kbdRow}>
+                <span className={styles.kbdLabel}>Copiar Valor de Medida</span>
+                <div className={styles.kbdKeys}>
+                  <span style={{ fontSize: "10px", color: "var(--help-desc-color)" }}>Clique na tag de pixels</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

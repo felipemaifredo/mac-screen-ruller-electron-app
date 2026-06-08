@@ -207,7 +207,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 10px 12px 14px 12px;
+  padding: 14px 16px;
   border-top: 1px solid var(--help-modal-border);
   background-color: var(--help-modal-bg);
   flex: 1;
@@ -216,128 +216,242 @@
   transition: background-color 0.3s, border-top-color 0.3s;
 }
 
-.helpTitle {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--help-title-color);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-  transition: color 0.3s;
-}
-
-.helpList {
+/* Tabs Styles */
+.tabs {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.helpItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;
-}
-
-.helpKey {
-  background-color: var(--help-key-bg);
-  border: 1px solid var(--help-key-border);
-  border-radius: 4px;
-  padding: 2px 5px;
-  color: var(--help-key-text);
-  font-size: 10px;
-  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-}
-
-.helpDesc {
-  color: var(--help-desc-color);
-  text-align: right;
-  transition: color 0.3s;
-}
-
-.themeSelector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 7px;
+  padding: 2px;
+  margin-bottom: 16px;
   -webkit-app-region: no-drag;
 }
 
+.container.lightTheme .tabs {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.tabButton {
+  flex: 1;
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  opacity: 0.75;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, opacity 0.15s, box-shadow 0.15s;
+  text-align: center;
+}
+
+.tabButton:hover {
+  opacity: 1;
+}
+
+.tabButtonActive {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.container.lightTheme .tabButtonActive {
+  background-color: #ffffff;
+  color: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Settings List Styles */
+.settingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.settingLabel {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.settingControl {
+  display: flex;
+  align-items: center;
+}
+
+/* Segmented Control Styles */
+.segmentedControl {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  padding: 2px;
+  min-width: 140px;
+}
+
+.container.lightTheme .segmentedControl {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.segmentedButton {
+  flex: 1;
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, opacity 0.15s, box-shadow 0.15s;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.segmentedButton:hover {
+  opacity: 1;
+}
+
+.segmentedButtonActive {
+  background-color: var(--active-color);
+  color: #ffffff !important;
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.container.lightTheme .segmentedButtonActive {
+  background-color: var(--active-color);
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Color Circle selector */
+.themeSelector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .colorCircle {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: 1.5px solid transparent;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.15s, border-color 0.15s;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.2);
 }
 
 .colorCircle:hover {
-  transform: scale(1.15);
+  transform: scale(1.2);
 }
 
 .colorCircleActive {
   border-color: #ffffff;
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 2px var(--active-color), inset 0 1px 1.5px rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.container.lightTheme .colorCircle {
+  box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.1);
 }
 
 .container.lightTheme .colorCircleActive {
-  border-color: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px var(--active-color), inset 0 1px 1.5px rgba(0, 0, 0, 0.1);
 }
 
-.blue { background-color: rgb(0, 122, 255); }
-.red { background-color: rgb(255, 59, 48); }
-.green { background-color: rgb(52, 199, 89); }
-.orange { background-color: rgb(255, 149, 0); }
-.purple { background-color: rgb(175, 82, 222); }
-.yellow { background-color: rgb(255, 204, 0); }
+.blue { background-color: #007aff; }
+.red { background-color: #ff3b30; }
+.green { background-color: #34c759; }
+.orange { background-color: #ff9500; }
+.purple { background-color: #af52de; }
+.yellow { background-color: #ffcc00; }
 
-/* Appearance Settings Styles */
-.appearanceSelector {
+/* Keyboard Shortcuts Styles */
+.kbdList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Elegant scrollbar for Shortcuts list */
+.kbdList::-webkit-scrollbar {
+  width: 4px;
+}
+.kbdList::-webkit-scrollbar-track {
+  background: transparent;
+}
+.kbdList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+.container.lightTheme .kbdList::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.kbdRow {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 6px;
-  -webkit-app-region: no-drag;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.toggleGroup {
+.container.lightTheme .kbdRow {
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+
+.kbdRow:last-child {
+  border-bottom: none;
+}
+
+.kbdLabel {
+  font-size: 11px;
+  color: var(--help-desc-color);
+}
+
+.kbdKeys {
   display: flex;
-  background-color: var(--help-key-bg);
-  border: 1px solid var(--help-key-border);
-  border-radius: 6px;
-  padding: 2px;
-  flex: 1;
+  align-items: center;
+  gap: 3px;
 }
 
-.toggleButton {
-  flex: 1;
-  border: none;
-  background-color: transparent;
-  color: var(--btn-color);
+.kbdKey {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2.2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 10px;
   font-weight: 500;
-  padding: 4px 0;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
-  text-align: center;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
-.toggleButton:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.container.lightTheme .toggleButton:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
-.toggleButtonActive {
-  background-color: var(--active-color);
-  color: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+.container.lightTheme .kbdKey {
+  background: linear-gradient(180deg, #ffffff 0%, #f2f2f2 100%);
+  border-color: rgba(0, 0, 0, 0.12);
+  border-bottom-color: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 1px 1.5px rgba(0, 0, 0, 0.08);
+  text-shadow: none;
 }
