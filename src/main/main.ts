@@ -1,11 +1,13 @@
 //Libs
-import { app, BrowserWindow, ipcMain, globalShortcut, screen, systemPreferences } from "electron"
+import { app, BrowserWindow, ipcMain, globalShortcut, screen, systemPreferences, nativeImage } from "electron"
 import * as path from "path"
 import { fileURLToPath } from "url"
 import * as fs from "fs"
 
 //Imports
 // (No custom local imports in main file)
+
+app.setName("Mai Screen Ruller")
 
 //Types
 type WindowConfig = {
@@ -131,6 +133,7 @@ function createToolbarWindow() {
   let height = 50
 
   toolbarWin = new BrowserWindow({
+    title: "Mai Screen Ruller",
     width: width,
     height: height,
     x: Math.round(bounds.x + (bounds.width - width) / 2),
@@ -243,7 +246,13 @@ function setupIpc() {
   })
 
   ipcMain.on("close-app", function () {
-    app.quit()
+    if (process.platform === "darwin") {
+      if (toolbarWin && !toolbarWin.isDestroyed()) {
+        toolbarWin.close()
+      }
+    } else {
+      app.quit()
+    }
   })
 
   ipcMain.on("minimize-app", function () {
@@ -287,6 +296,9 @@ function setupIpc() {
 
 function registerShortcuts() {
   globalShortcut.register("CommandOrControl+Shift+M", function () {
+    if (toolbarWin && !toolbarWin.isDestroyed() && toolbarWin.isMinimized()) {
+      toolbarWin.restore()
+    }
     if (currentMode) {
       handleModeChange(null)
     } else {
@@ -296,10 +308,35 @@ function registerShortcuts() {
 }
 
 //Main
+function createWindows() {
+  if (!toolbarWin || toolbarWin.isDestroyed()) {
+    createToolbarWindow()
+  }
+  if (!overlayWin || overlayWin.isDestroyed()) {
+    createOverlayWindow()
+  }
+}
+
 function init() {
   loadConfig()
-  createToolbarWindow()
-  createOverlayWindow()
+
+  if (process.platform === "darwin") {
+    try {
+      app.dock.show()
+      let iconPath = path.join(__dirname, "../assets/lin/icon.png")
+      if (!fs.existsSync(iconPath)) {
+        iconPath = path.join(__dirname, "../../assets/lin/icon.png")
+      }
+      if (fs.existsSync(iconPath)) {
+        let image = nativeImage.createFromPath(iconPath)
+        app.dock.setIcon(image)
+      }
+    } catch (e) {
+      console.error("Erro ao definir icone do Dock:", e)
+    }
+  }
+
+  createWindows()
   setupIpc()
   registerShortcuts()
 }
@@ -314,7 +351,14 @@ app.on("window-all-closed", function () {
 
 app.on("activate", function () {
   if (BrowserWindow.getAllWindows().length === 0) {
-    init()
+    createWindows()
+  } else {
+    if (toolbarWin && !toolbarWin.isDestroyed()) {
+      if (toolbarWin.isMinimized()) {
+        toolbarWin.restore()
+      }
+      toolbarWin.focus()
+    }
   }
 })
 

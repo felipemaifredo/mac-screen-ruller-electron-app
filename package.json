@@ -1,5 +1,6 @@
 {
   "name": "mai-screen-ruller",
+  "productName": "Mai Screen Ruller",
   "version": "1.0.1",
   "description": "Mai Screen Ruller utility for macOS built with Electron, React, Vite, and TypeScript.",
   "author": "Felipemaifredo",
@@ -9,6 +10,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "tsc --noEmit",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:win": "npm run build && electron-builder --win",
     "dist": "npm run build && electron-builder"
   },
   "dependencies": {
