@@ -1,7 +1,7 @@
 {
-  "name": "mac-screen-ruller",
-  "version": "0.0.1",
-  "description": "Screen Ruler utility for macOS built with Electron, React, Vite, and TypeScript.",
+  "name": "mai-screen-ruller",
+  "version": "1.0.1",
+  "description": "Mai Screen Ruller utility for macOS built with Electron, React, Vite, and TypeScript.",
   "author": "Felipemaifredo",
   "main": "dist-electron/main.js",
   "type": "module",
@@ -27,8 +27,8 @@
     "vite-plugin-electron": "^0.28.6"
   },
   "build": {
-    "appId": "com.felipemaifredo.screenruler",
-    "productName": "Screen Ruler",
+    "appId": "com.felipemaifredo.maiscreenruller",
+    "productName": "Mai Screen Ruller",
     "directories": {
       "output": "release"
     },

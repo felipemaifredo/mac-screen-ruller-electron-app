@@ -1,6 +1,6 @@
-# Design System: macOS Screen Ruler
+# Design System: Mai Screen Ruller
 
-Este documento define o sistema de design para o aplicativo Screen Ruler, baseado nas preferências de estilo nativo do macOS (minimalista, semi-translúcido e preciso).
+Este documento define o sistema de design para o aplicativo Mai Screen Ruller, baseado nas preferências de estilo nativo do macOS (minimalista, semi-translúcido e preciso).
 
 ## Princípios de Design
 

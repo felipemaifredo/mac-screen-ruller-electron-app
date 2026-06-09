@@ -1,4 +1,4 @@
-# macOS Screen Ruler 📏
+# Mai Screen Ruller 📏
 
 Uma ferramenta desktop leve, moderna e de alta precisão para medir elementos na tela, inspirada no *Screen Ruler* do Microsoft PowerToys. Desenvolvida para macOS (com suporte completo para Windows) utilizando **Electron**, **React**, **TypeScript** e **Vite**.
 
@@ -27,7 +27,7 @@ A interface adota a estética nativa do macOS, apresentando uma barra de ferrame
 O projeto segue uma arquitetura modularizada e limpa para facilitar futuras expansões (como detecção automática de bordas ou zoom de pixels):
 
 ```
-mac-screen-ruler/
+mai-screen-ruller/
 ├── assets/                  # Ícones oficiais do aplicativo (.icns, .ico, .png)
 ├── dist-electron/           # Código compilado do Electron (Main e Preload)
 ├── src/
@@ -70,7 +70,7 @@ Certifique-se de possuir o [Node.js](https://nodejs.org/) instalado na sua máqu
 
 1. Clone o repositório ou navegue até a pasta do projeto:
    ```bash
-   cd mac-screen-ruler
+   cd mai-screen-ruller
    ```
 
 2. Instale as dependências:
