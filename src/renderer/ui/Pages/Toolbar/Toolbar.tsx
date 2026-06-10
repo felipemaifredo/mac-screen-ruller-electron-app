@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 
 //Imports
 import Icon from "../../Components/Icon"
-import texts from "../../../Resourses/Texts/texts"
+import useI18n from "../../../Lib/Hooks/useI18n"
 import styles from "./Toolbar.module.css"
 
 //Types
@@ -11,6 +11,7 @@ import type { ThemeColor } from "../../../Lib/Utils/canvasDrawing"
 
 //Main
 const Toolbar = () => {
+  let { t, locale, changeLanguage } = useI18n()
   let [mode, setMode] = useState<string | null>(null)
   let [theme, setTheme] = useState<ThemeColor>("blue")
   let [showHelp, setShowHelp] = useState(false)
@@ -133,7 +134,7 @@ const Toolbar = () => {
           <button
             className={`${styles.button} ${mode === "selection" ? styles.buttonActive : ""}`}
             onClick={function () { handleSelectMode("selection") }}
-            data-tooltip={texts.toolbar.selection}
+            data-tooltip={t.toolbar.selection}
           >
             <Icon name="selection" size={16} />
           </button>
@@ -141,7 +142,7 @@ const Toolbar = () => {
           <button
             className={`${styles.button} ${mode === "horizontal" ? styles.buttonActive : ""}`}
             onClick={function () { handleSelectMode("horizontal") }}
-            data-tooltip={texts.toolbar.horizontal}
+            data-tooltip={t.toolbar.horizontal}
           >
             <Icon name="horizontal" size={16} />
           </button>
@@ -149,7 +150,7 @@ const Toolbar = () => {
           <button
             className={`${styles.button} ${mode === "vertical" ? styles.buttonActive : ""}`}
             onClick={function () { handleSelectMode("vertical") }}
-            data-tooltip={texts.toolbar.vertical}
+            data-tooltip={t.toolbar.vertical}
           >
             <Icon name="vertical" size={16} />
           </button>
@@ -157,7 +158,7 @@ const Toolbar = () => {
           {/* <button
             className={`${styles.button} ${mode === "cross" ? styles.buttonActive : ""}`}
             onClick={function () { handleSelectMode("cross") }}
-            data-tooltip={texts.toolbar.cross}
+            data-tooltip={t.toolbar.cross}
           >
             <Icon name="cross" size={16} />
           </button> */}
@@ -169,7 +170,7 @@ const Toolbar = () => {
           <button
             className={`${styles.utilityButton} ${showHelp ? styles.buttonActive : ""}`}
             onClick={toggleHelp}
-            data-tooltip="Atalhos e Comandos"
+            data-tooltip={t.toolbar.tooltipHelp}
           >
             <Icon name="settings" size={16} />
           </button>
@@ -177,7 +178,7 @@ const Toolbar = () => {
           <button
             className={styles.utilityButton}
             onClick={handleMinimize}
-            data-tooltip={texts.toolbar.minimize}
+            data-tooltip={t.toolbar.minimize}
           >
             <Icon name="minimize" size={16} />
           </button>
@@ -185,7 +186,7 @@ const Toolbar = () => {
           <button
             className={`${styles.utilityButton} ${styles.closeButton}`}
             onClick={handleClose}
-            data-tooltip={texts.toolbar.close}
+            data-tooltip={t.toolbar.close}
           >
             <Icon name="close" size={16} />
           </button>
@@ -199,60 +200,60 @@ const Toolbar = () => {
               className={`${styles.tabButton} ${activeTab === "preferences" ? styles.tabButtonActive : ""}`}
               onClick={function () { setActiveTab("preferences") }}
             >
-              Preferências
+              {t.toolbar.preferencesTab}
             </button>
             <button
               className={`${styles.tabButton} ${activeTab === "shortcuts" ? styles.tabButtonActive : ""}`}
               onClick={function () { setActiveTab("shortcuts") }}
             >
-              Atalhos
+              {t.toolbar.shortcutsTab}
             </button>
           </div>
 
           {activeTab === "preferences" ? (
             <div className={styles.settingsList}>
               <div className={styles.settingRow}>
-                <span className={styles.settingLabel}>Tema</span>
+                <span className={styles.settingLabel}>{t.toolbar.theme}</span>
                 <div className={styles.settingControl}>
                   <div className={styles.segmentedControl}>
                     <button
                       className={`${styles.segmentedButton} ${themeMode === "light" ? styles.segmentedButtonActive : ""}`}
                       onClick={function () { handleSelectThemeMode("light") }}
                     >
-                      Claro
+                      {t.toolbar.themeLight}
                     </button>
                     <button
                       className={`${styles.segmentedButton} ${themeMode === "dark" ? styles.segmentedButtonActive : ""}`}
                       onClick={function () { handleSelectThemeMode("dark") }}
                     >
-                      Escuro
+                      {t.toolbar.themeDark}
                     </button>
                   </div>
                 </div>
               </div>
 
               <div className={styles.settingRow}>
-                <span className={styles.settingLabel}>Material</span>
+                <span className={styles.settingLabel}>{t.toolbar.material}</span>
                 <div className={styles.settingControl}>
                   <div className={styles.segmentedControl}>
                     <button
                       className={`${styles.segmentedButton} ${materialType === "translucent" ? styles.segmentedButtonActive : ""}`}
                       onClick={function () { handleSelectMaterialType("translucent") }}
                     >
-                      Translúcido
+                      {t.toolbar.materialTranslucent}
                     </button>
                     <button
                       className={`${styles.segmentedButton} ${materialType === "tinted" ? styles.segmentedButtonActive : ""}`}
                       onClick={function () { handleSelectMaterialType("tinted") }}
                     >
-                      Tonalizado
+                      {t.toolbar.materialTinted}
                     </button>
                   </div>
                 </div>
               </div>
 
               <div className={styles.settingRow}>
-                <span className={styles.settingLabel}>Cor das Guias</span>
+                <span className={styles.settingLabel}>{t.toolbar.guideColor}</span>
                 <div className={styles.settingControl}>
                   <div className={styles.themeSelector}>
                     <button
@@ -261,7 +262,7 @@ const Toolbar = () => {
                         background: "conic-gradient(from 180deg at 50% 50%, #ff453a, #ff9f0a, #ffd60a, #30d158, #0a84ff, #5e5ce6, #bf5af2, #ff453a)"
                       }}
                       onClick={function () { handleSelectTheme("system") }}
-                      data-tooltip="Destaque do Sistema (macOS)"
+                      data-tooltip={t.toolbar.systemHighlight}
                     />
 
                     <div className={styles.separatorMini} />
@@ -292,7 +293,7 @@ const Toolbar = () => {
                           picker.click()
                         }
                       }}
-                      data-tooltip="Cor Personalizada..."
+                      data-tooltip={t.toolbar.customColor}
                     />
                     <input
                       id="custom-color-picker"
@@ -304,11 +305,37 @@ const Toolbar = () => {
                   </div>
                 </div>
               </div>
+
+              <div className={styles.settingRow}>
+                <span className={styles.settingLabel}>{t.toolbar.language}</span>
+                <div className={styles.settingControl}>
+                  <div className={styles.segmentedControl}>
+                    <button
+                      className={`${styles.segmentedButton} ${locale === "en" ? styles.segmentedButtonActive : ""}`}
+                      onClick={function () { changeLanguage("en") }}
+                    >
+                      EN
+                    </button>
+                    <button
+                      className={`${styles.segmentedButton} ${locale === "pt" ? styles.segmentedButtonActive : ""}`}
+                      onClick={function () { changeLanguage("pt") }}
+                    >
+                      PT
+                    </button>
+                    <button
+                      className={`${styles.segmentedButton} ${locale === "es" ? styles.segmentedButtonActive : ""}`}
+                      onClick={function () { changeLanguage("es") }}
+                    >
+                      ES
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className={styles.kbdList}>
               <div className={styles.kbdRow}>
-                <span className={styles.kbdLabel}>Atalho Global</span>
+                <span className={styles.kbdLabel}>{t.toolbar.globalShortcut}</span>
                 <div className={styles.kbdKeys}>
                   <kbd className={styles.kbdKey}>⌘</kbd>
                   <kbd className={styles.kbdKey}>⇧</kbd>
@@ -316,13 +343,13 @@ const Toolbar = () => {
                 </div>
               </div>
               <div className={styles.kbdRow}>
-                <span className={styles.kbdLabel}>Limpar / Cancelar</span>
+                <span className={styles.kbdLabel}>{t.toolbar.clearCancel}</span>
                 <div className={styles.kbdKeys}>
                   <kbd className={styles.kbdKey}>⎋ Esc</kbd>
                 </div>
               </div>
               <div className={styles.kbdRow}>
-                <span className={styles.kbdLabel}>Mudar Modo (Seleção / Horiz / Vert)</span>
+                <span className={styles.kbdLabel}>{t.toolbar.changeMode}</span>
                 <div className={styles.kbdKeys}>
                   <kbd className={styles.kbdKey}>S</kbd>
                   <kbd className={styles.kbdKey}>H</kbd>
@@ -330,19 +357,19 @@ const Toolbar = () => {
                 </div>
               </div>
               <div className={styles.kbdRow}>
-                <span className={styles.kbdLabel}>Fixar Medição na Tela</span>
+                <span className={styles.kbdLabel}>{t.toolbar.pinMeasurement}</span>
                 <div className={styles.kbdKeys}>
                   <kbd className={styles.kbdKey}>↵ Enter</kbd>
                 </div>
               </div>
               <div className={styles.kbdRow}>
-                <span className={styles.kbdLabel}>Apagar Última Fixada</span>
+                <span className={styles.kbdLabel}>{t.toolbar.deleteLastPinned}</span>
                 <div className={styles.kbdKeys}>
                   <kbd className={styles.kbdKey}>⌫ Backspace</kbd>
                 </div>
               </div>
               <div className={styles.kbdRow}>
-                <span className={styles.kbdLabel}>Mover Guia Ativa (1px / 10px)</span>
+                <span className={styles.kbdLabel}>{t.toolbar.moveActiveGuide}</span>
                 <div className={styles.kbdKeys}>
                   <kbd className={styles.kbdKey}>↑</kbd>
                   <kbd className={styles.kbdKey}>↓</kbd>
@@ -353,9 +380,9 @@ const Toolbar = () => {
                 </div>
               </div>
               <div className={styles.kbdRow}>
-                <span className={styles.kbdLabel}>Copiar Valor de Medida</span>
+                <span className={styles.kbdLabel}>{t.toolbar.copyPixelValue}</span>
                 <div className={styles.kbdKeys}>
-                  <span style={{ fontSize: "10px", color: "var(--help-desc-color)" }}>Clique na tag de pixels</span>
+                  <span style={{ fontSize: "10px", color: "var(--help-desc-color)" }}>{t.toolbar.clickPixelTag}</span>
                 </div>
               </div>
             </div>

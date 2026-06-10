@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 
 //Imports
 import useKeyboard from "../../../Lib/Hooks/useKeyboard"
+import useI18n from "../../../Lib/Hooks/useI18n"
 import { clearCanvas, drawSelection, drawHorizontal, drawVertical } from "../../../Lib/Utils/canvasDrawing"
 import type { Point, BadgeInfo, ThemeColor } from "../../../Lib/Utils/canvasDrawing"
 import styles from "./Overlay.module.css"
@@ -16,6 +17,7 @@ type PinnedMeasurement = {
 
 //Main
 const Overlay = () => {
+  let { t } = useI18n()
   let canvasRef = useRef<HTMLCanvasElement | null>(null)
   let [mode, setMode] = useState<string | null>(null)
   let [theme, setTheme] = useState<ThemeColor>("blue")
@@ -159,11 +161,11 @@ const Overlay = () => {
       let badge: BadgeInfo | null = null
 
       if (m.mode === "selection") {
-        badge = drawSelection(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor)
+        badge = drawSelection(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor, t.toolbar.copied)
       } else if (m.mode === "horizontal") {
-        badge = drawHorizontal(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor)
+        badge = drawHorizontal(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor, t.toolbar.copied)
       } else if (m.mode === "vertical") {
-        badge = drawVertical(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor)
+        badge = drawVertical(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme, systemColor, t.toolbar.copied)
       }
       // else if (m.mode === "cross") {
       //   badge = drawCross(ctx, m.startPoint, m.endPoint, dimensions.w, dimensions.h, isCopied, theme)
@@ -184,18 +186,18 @@ const Overlay = () => {
     let badge: BadgeInfo | null = null
 
     if (mode === "selection") {
-      badge = drawSelection(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor)
+      badge = drawSelection(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor, t.toolbar.copied)
     } else if (mode === "horizontal") {
-      badge = drawHorizontal(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor)
+      badge = drawHorizontal(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor, t.toolbar.copied)
     } else if (mode === "vertical") {
-      badge = drawVertical(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor)
+      badge = drawVertical(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme, systemColor, t.toolbar.copied)
     }
     // else if (mode === "cross") {
     //   badge = drawCross(ctx, startPoint, endPoint, dimensions.w, dimensions.h, copied, theme)
     // }
 
     activeBadgeRef.current = badge
-  }, [mode, startPoint, endPoint, dimensions, copied, theme, fixedMeasurements, copiedIndex, systemColor])
+  }, [mode, startPoint, endPoint, dimensions, copied, theme, fixedMeasurements, copiedIndex, systemColor, t.toolbar.copied])
 
   useEffect(function () {
     draw()

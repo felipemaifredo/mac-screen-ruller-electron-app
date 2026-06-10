@@ -95,13 +95,14 @@ function drawBadge(
   y: number,
   screenWidth: number,
   screenHeight: number,
-  copied: boolean = false
+  copied: boolean = false,
+  copiedText: string = "Copiado!"
 ): BadgeInfo {
   ctx.font = "bold 11px -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif"
   ctx.textBaseline = "middle"
   ctx.textAlign = "center"
 
-  let displayText = copied ? "Copiado!" : text
+  let displayText = copied ? copiedText : text
 
   let textWidth = ctx.measureText(displayText).width
   let paddingX = 8
@@ -135,7 +136,8 @@ function drawSelection(
   screenHeight: number,
   copied: boolean = false,
   theme: ThemeColor = "blue",
-  systemColor?: string
+  systemColor?: string,
+  copiedText?: string
 ): BadgeInfo | null {
   let x = Math.min(start.x, end.x)
   let y = Math.min(start.y, end.y)
@@ -156,7 +158,7 @@ function drawSelection(
   let labelText = `${w} × ${h} px`
   let labelX = x + w / 2
   let labelY = y + h / 2
-  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
+  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied, copiedText)
 }
 
 function drawHorizontal(
@@ -167,7 +169,8 @@ function drawHorizontal(
   screenHeight: number,
   copied: boolean = false,
   theme: ThemeColor = "blue",
-  systemColor?: string
+  systemColor?: string,
+  copiedText?: string
 ): BadgeInfo | null {
   let y = start.y
   let xStart = start.x
@@ -195,7 +198,7 @@ function drawHorizontal(
   let labelText = `${length} px`
   let labelX = xStart + (xEnd - xStart) / 2
   let labelY = y - 18
-  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
+  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied, copiedText)
 }
 
 function drawVertical(
@@ -206,7 +209,8 @@ function drawVertical(
   screenHeight: number,
   copied: boolean = false,
   theme: ThemeColor = "blue",
-  systemColor?: string
+  systemColor?: string,
+  copiedText?: string
 ): BadgeInfo | null {
   let x = start.x
   let yStart = start.y
@@ -234,7 +238,7 @@ function drawVertical(
   let labelText = `${length} px`
   let labelX = x + 30
   let labelY = yStart + (yEnd - yStart) / 2
-  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied)
+  return drawBadge(ctx, labelText, labelX, labelY, screenWidth, screenHeight, copied, copiedText)
 }
 
 /*
