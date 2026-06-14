@@ -282,16 +282,8 @@ function init() {
   if (process.platform === "darwin") {
     try {
       electron.app.dock?.show();
-      let iconPath = path__namespace.join(__dirname, "../assets/lin/icon.png");
-      if (!fs__namespace.existsSync(iconPath)) {
-        iconPath = path__namespace.join(__dirname, "../../assets/lin/icon.png");
-      }
-      if (fs__namespace.existsSync(iconPath)) {
-        let image = electron.nativeImage.createFromPath(iconPath);
-        electron.app.dock?.setIcon(image);
-      }
     } catch (e) {
-      console.error("Erro ao definir icone do Dock:", e);
+      console.error("Erro ao inicializar Dock:", e);
     }
   }
   createWindows();

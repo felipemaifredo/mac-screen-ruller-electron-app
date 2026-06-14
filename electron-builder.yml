@@ -15,7 +15,7 @@ win:
     - nsis
     - zip
 mac:
-  icon: assets/mac/icon.icns
+  icon: assets/mac/logo-1024.icns
   target:
     - dmg
     - zip

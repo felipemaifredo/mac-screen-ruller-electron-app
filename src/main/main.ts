@@ -1,5 +1,5 @@
 //Libs
-import { app, BrowserWindow, ipcMain, globalShortcut, screen, systemPreferences, nativeImage } from "electron"
+import { app, BrowserWindow, ipcMain, globalShortcut, screen, systemPreferences } from "electron"
 import * as path from "path"
 import * as fs from "fs"
 
@@ -308,16 +308,8 @@ function init() {
   if (process.platform === "darwin") {
     try {
       app.dock?.show()
-      let iconPath = path.join(__dirname, "../assets/lin/icon.png")
-      if (!fs.existsSync(iconPath)) {
-        iconPath = path.join(__dirname, "../../assets/lin/icon.png")
-      }
-      if (fs.existsSync(iconPath)) {
-        let image = nativeImage.createFromPath(iconPath)
-        app.dock?.setIcon(image)
-      }
     } catch (e) {
-      console.error("Erro ao definir icone do Dock:", e)
+      console.error("Erro ao inicializar Dock:", e)
     }
   }
 
