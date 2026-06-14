@@ -1,7 +1,6 @@
 //Libs
 import { app, BrowserWindow, ipcMain, globalShortcut, screen, systemPreferences, nativeImage } from "electron"
 import * as path from "path"
-import { fileURLToPath } from "url"
 import * as fs from "fs"
 
 //Imports
@@ -10,23 +9,9 @@ import * as fs from "fs"
 app.setName("Mai Screen Ruller")
 
 //Types
-type WindowConfig = {
-  width: number
-  height: number
-  x?: number
-  y?: number
-}
-
 //Consts
 // (None - using let since rule 4 restricts const to JSX)
 
-//Funcs
-function getDirname() {
-  let filename = fileURLToPath(import.meta.url)
-  return path.dirname(filename)
-}
-
-let __dirname = getDirname()
 let toolbarWin: BrowserWindow | null = null
 let overlayWin: BrowserWindow | null = null
 let currentMode: string | null = null
@@ -145,7 +130,7 @@ function createToolbarWindow() {
     maximizable: false,
     hasShadow: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "../preload/preload.js"),
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -153,12 +138,12 @@ function createToolbarWindow() {
 
   toolbarWin.setAlwaysOnTop(true, "floating")
 
-  let devServerUrl = process.env.VITE_DEV_SERVER_URL
+  let devServerUrl = process.env.ELECTRON_RENDERER_URL
   if (devServerUrl) {
     toolbarWin.loadURL(devServerUrl + "?window=toolbar")
     toolbarWin.webContents.openDevTools({ mode: "detach" })
   } else {
-    let indexHtml = path.join(__dirname, "../dist/index.html")
+    let indexHtml = path.join(__dirname, "../renderer/index.html")
     toolbarWin.loadFile(indexHtml, { search: "window=toolbar" })
   }
 
@@ -195,7 +180,7 @@ function createOverlayWindow() {
     enableLargerThanScreen: true,
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "../preload/preload.js"),
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -204,11 +189,11 @@ function createOverlayWindow() {
   overlayWin.setAlwaysOnTop(true, "screen-saver")
   overlayWin.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
-  let devServerUrl = process.env.VITE_DEV_SERVER_URL
+  let devServerUrl = process.env.ELECTRON_RENDERER_URL
   if (devServerUrl) {
     overlayWin.loadURL(devServerUrl + "?window=overlay")
   } else {
-    let indexHtml = path.join(__dirname, "../dist/index.html")
+    let indexHtml = path.join(__dirname, "../renderer/index.html")
     overlayWin.loadFile(indexHtml, { search: "window=overlay" })
   }
 
@@ -322,14 +307,14 @@ function init() {
 
   if (process.platform === "darwin") {
     try {
-      app.dock.show()
+      app.dock?.show()
       let iconPath = path.join(__dirname, "../assets/lin/icon.png")
       if (!fs.existsSync(iconPath)) {
         iconPath = path.join(__dirname, "../../assets/lin/icon.png")
       }
       if (fs.existsSync(iconPath)) {
         let image = nativeImage.createFromPath(iconPath)
-        app.dock.setIcon(image)
+        app.dock?.setIcon(image)
       }
     } catch (e) {
       console.error("Erro ao definir icone do Dock:", e)

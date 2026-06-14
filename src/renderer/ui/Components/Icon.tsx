@@ -1,5 +1,4 @@
-//Libs
-import React from "react"
+
 
 //Types
 type IconProps = {
